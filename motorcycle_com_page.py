@@ -5,7 +5,6 @@ class BMW2025Spider(scrapy.Spider):
     name = "motorcycle_com_page"
     allowed_domains = ["www.motorcycle.com"]
 
-    # YOU CAN CHANGE THIS NUMBER WHEN THE WEBSITE HAS MORE PAGES
     total_pages = 5
 
     custom_headers = {
@@ -14,17 +13,14 @@ class BMW2025Spider(scrapy.Spider):
 
     def start_requests(self):
 
-        # Manually generate all Kawasaki 2025 list pages
         base_url = "https://www.motorcycle.com/specs/cfmoto.html"
 
-        # Page 1 (without page_num)
         yield scrapy.Request(
             base_url,
             headers=self.custom_headers,
             callback=self.parse_list_page
         )
 
-        # Page 2..N
         for i in range(2, self.total_pages + 1):
             url = f"{base_url}?page_num={i}"
             yield scrapy.Request(
@@ -33,9 +29,7 @@ class BMW2025Spider(scrapy.Spider):
                 callback=self.parse_list_page
             )
 
-    # ----------------------------------------
     # PARSE LIST PAGES
-    # ----------------------------------------
     def parse_list_page(self, response):
 
         # Extract motorcycle detail links
@@ -48,9 +42,7 @@ class BMW2025Spider(scrapy.Spider):
                 callback=self.parse_specs
             )
 
-    # ----------------------------------------
     # PARSE INDIVIDUAL BIKE SPEC PAGE
-    # ----------------------------------------
     def parse_specs(self, response):
 
         bike_name = response.css("h1.hdr-h.sl-post-title::text").get()
